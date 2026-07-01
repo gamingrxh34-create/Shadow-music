@@ -135,6 +135,13 @@ export class Player {
 
   _setupWebAudio() {
     if (this.audioContext) return;
+    
+    // Disable Web Audio API on mobile devices.
+    // Routing audio through AudioContext causes the OS to suspend playback
+    // when the app goes into the background on iOS/Android.
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    if (isMobile) return;
+
     const AudioContext = window.AudioContext || window.webkitAudioContext;
     if (!AudioContext) return;
 

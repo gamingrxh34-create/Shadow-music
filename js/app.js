@@ -37,6 +37,7 @@ class App {
     this.renderLikedView();
     this.renderRecentView();
     this.renderDownloadsView();
+    this.renderArtistsView();
     this.renderQueueView();
     
     this.switchView('home-view');
@@ -544,6 +545,28 @@ class App {
     });
   }
 
+  getFollowedArtists() {
+    try {
+      const stored = localStorage.getItem('shadow_followed_artists');
+      return stored ? JSON.parse(stored) : [];
+    } catch { return []; }
+  }
+
+  isArtistFollowed(name) {
+    return this.getFollowedArtists().includes(name);
+  }
+
+  toggleFollowArtist(name) {
+    let followed = this.getFollowedArtists();
+    if (followed.includes(name)) {
+      followed = followed.filter(n => n !== name);
+    } else {
+      followed.push(name);
+    }
+    localStorage.setItem('shadow_followed_artists', JSON.stringify(followed));
+    return followed.includes(name);
+  }
+
   openArtistView(artistName) {
     this.switchView('artist-view');
     const artistSongs = this.allSongs.filter(s => s.artist === artistName);
@@ -563,6 +586,26 @@ class App {
     const playBtn = document.getElementById('play-artist-btn');
     if (playBtn) {
       playBtn.onclick = () => this.player.setQueue(artistSongs, 0);
+    }
+
+    const followBtn = document.getElementById('follow-artist-btn');
+    if (followBtn) {
+      const updateFollowBtn = () => {
+        const isFollowed = this.isArtistFollowed(artistName);
+        followBtn.textContent = isFollowed ? 'Following' : 'Follow';
+        followBtn.style.background = isFollowed ? 'var(--text-base)' : 'transparent';
+        followBtn.style.color = isFollowed ? 'var(--bg-base)' : 'var(--text-base)';
+      };
+      updateFollowBtn();
+      followBtn.onclick = () => {
+        this.toggleFollowArtist(artistName);
+        updateFollowBtn();
+        // Trigger a re-render if we go back to the library view
+        const filterBtn = document.querySelector('.filter-btn[data-filter="artists"]');
+        if (filterBtn && filterBtn.classList.contains('active')) {
+          filterBtn.click();
+        }
+      };
     }
   }
 
@@ -721,15 +764,60 @@ class App {
         card.addEventListener('click', () => this.player.setQueue(songs, 0));
         grid.appendChild(card);
       });
-      
-      const plFilterBtn = document.querySelector('.filter-btn[data-filter="playlists"]');
-      if(plFilterBtn) {
-        plFilterBtn.addEventListener('click', () => {
-          document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-          plFilterBtn.classList.add('active');
-          this.playlists.renderLibraryPlaylists();
+    }
+  }
+
+  async renderArtistsView() {
+    const filterBtn = document.querySelector('.filter-btn[data-filter="artists"]');
+    const grid = document.getElementById('library-grid');
+    if(filterBtn && grid) {
+      filterBtn.addEventListener('click', () => {
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        filterBtn.classList.add('active');
+        
+        const followed = this.getFollowedArtists();
+        grid.innerHTML = '';
+        if(followed.length === 0) {
+          grid.innerHTML = '<div style="padding: 24px; color: var(--text-subdued);">You aren\'t following any artists yet.</div>';
+          return;
+        }
+        
+        followed.forEach(artistName => {
+          const artistInfo = this.artistsData[artistName] || {};
+          const artistSongs = this.allSongs.filter(s => s.artist === artistName);
+          const defaultImage = artistSongs.length > 0 ? artistSongs[0].coverUrl : '';
+          const imgUrl = artistInfo.image || defaultImage;
+          
+          const card = document.createElement('div');
+          card.className = 'media-card';
+          card.innerHTML = `
+            <div class="media-card-img-container" style="border-radius: 50%; overflow: hidden;">
+              ${imgUrl ? `<img src="${imgUrl}" alt="${artistName}" loading="lazy" style="border-radius: 50%; object-fit: cover; width: 100%; height: 100%;">` : `<div class="placeholder" style="border-radius: 50%;"><i class="fa-solid fa-user"></i></div>`}
+              <button class="play-btn-overlay" style="border-radius: 50%;"><i class="fa-solid fa-play"></i></button>
+            </div>
+            <h4 style="text-align: center; margin-top: 8px;">${artistName}</h4>
+            <p style="text-align: center;">Artist</p>
+          `;
+          card.addEventListener('click', () => this.openArtistView(artistName));
+          
+          const playBtn = card.querySelector('.play-btn-overlay');
+          playBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if(artistSongs.length > 0) this.player.setQueue(artistSongs, 0);
+          });
+          
+          grid.appendChild(card);
         });
-      }
+      });
+    }
+
+    const plFilterBtn = document.querySelector('.filter-btn[data-filter="playlists"]');
+    if(plFilterBtn) {
+      plFilterBtn.addEventListener('click', () => {
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        plFilterBtn.classList.add('active');
+        this.playlists.renderLibraryPlaylists();
+      });
     }
   }
   renderQueueView() {

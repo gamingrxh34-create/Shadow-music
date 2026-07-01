@@ -118,6 +118,7 @@
           </div>
           <div class="library-filters">
             <button class="filter-btn active" data-filter="playlists">Playlists</button>
+            <button class="filter-btn" data-filter="artists">Artists</button>
             <button class="filter-btn" data-filter="downloads">Downloads</button>
           </div>
           <div class="card-grid" id="library-grid"></div>
@@ -159,8 +160,9 @@
               <p id="artist-view-bio" style="font-size: 14px; color: var(--text-subdued); max-width: 600px; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;"></p>
             </div>
           </div>
-          <div class="playlist-actions">
+          <div class="playlist-actions" style="display: flex; align-items: center; gap: 16px;">
             <button class="play-circle-btn" id="play-artist-btn"><i class="fa-solid fa-play"></i></button>
+            <button class="btn-primary" id="follow-artist-btn" style="border-radius: 20px; padding: 8px 24px; font-weight: 600; background: transparent; border: 1px solid var(--text-subdued); color: var(--text-base);">Follow</button>
           </div>
           <div class="track-list" id="artist-track-list"></div>
         </div>
@@ -204,20 +206,6 @@
             <h3>Next In Queue</h3>
           </div>
           <div class="track-list" id="queue-next-list"></div>
-        </div>
-
-        <div id="artist-view" class="view">
-          <div class="playlist-header">
-            <div class="playlist-cover default-cover" id="artist-view-cover" style="border-radius: 50%;"><i class="fa-solid fa-user"></i></div>
-            <div class="playlist-info">
-              <span class="type">Artist</span>
-              <h1 id="artist-view-title">Artist Name</h1>
-            </div>
-          </div>
-          <div class="playlist-actions">
-            <button class="play-circle-btn" id="play-artist-btn"><i class="fa-solid fa-play"></i></button>
-          </div>
-          <div class="track-list" id="artist-track-list"></div>
         </div>
 
       </div>

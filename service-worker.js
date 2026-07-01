@@ -1,19 +1,19 @@
-const CACHE_NAME = 'shadow-music-v2-cache-v11';
+const CACHE_NAME = 'shadow-music-v2-cache-v14';
 const ASSETS = [
-  './?v=11',
-  './index.html?v=11',
-  './css/style.css?v=11',
-  './css/player.css?v=11',
-  './js/app.js?v=11',
-  './js/player.js?v=11',
-  './js/search.js?v=11',
-  './js/playlists.js?v=11',
-  './js/recentlyPlayed.js?v=11',
-  './js/indexeddb.js?v=11',
-  './js/downloads.js?v=11',
-  './data/songs.json?v=11',
-  './data/artists.json?v=11',
-  './manifest.json?v=11'
+  './?v=14',
+  './index.html?v=14',
+  './css/style.css?v=14',
+  './css/player.css?v=14',
+  './js/app.js?v=14',
+  './js/player.js?v=14',
+  './js/search.js?v=14',
+  './js/playlists.js?v=14',
+  './js/recentlyPlayed.js?v=14',
+  './js/indexeddb.js?v=14',
+  './js/downloads.js?v=14',
+  './data/songs.json?v=14',
+  './data/artists.json?v=14',
+  './manifest.json?v=14'
 ];
 
 self.addEventListener('install', (e) => {

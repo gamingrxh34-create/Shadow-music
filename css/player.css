@@ -1,4 +1,4 @@
-.player-bar { display: none; height: var(--player-height); background: #181818; border-top: 1px solid var(--border); align-items: center; justify-content: space-between; padding: 0 16px; position: fixed; bottom: 0; left: 0; right: 0; z-index: 100; }
+.player-bar { display: none; height: var(--player-height); background: #181818; border-top: 1px solid var(--border); align-items: center; justify-content: space-between; padding: 0 16px; position: fixed; bottom: 0; left: 0; right: 0; z-index: 2100; }
 body.has-player .player-bar { display: flex; }
 .player-left { width: 30%; min-width: 180px; display: flex; align-items: center; gap: 14px; }
 #player-cover { width: 56px; height: 56px; border-radius: var(--radius-sm); object-fit: cover; background: var(--bg-hover); }
@@ -21,8 +21,8 @@ body.has-player .player-bar { display: flex; }
 .playback-bar { width: 100%; display: flex; align-items: center; gap: 8px; font-size: 11px; color: var(--text-subdued); font-weight: 500; }
 .progress-container { flex: 1; height: 4px; background: var(--bg-active); border-radius: 2px; cursor: pointer; position: relative; }
 .progress-container:hover .progress-bar { background: var(--accent); }
-.progress-bar { height: 100%; width: 0%; background: var(--text-base); border-radius: 2px; position: relative; }
-.progress-bar::after { content: ''; position: absolute; right: -6px; top: 50%; transform: translateY(-50%); width: 12px; height: 12px; background: var(--text-base); border-radius: 50%; display: none; }
+.progress-bar { height: 100%; width: 0%; background: var(--accent); border-radius: 2px; position: relative; }
+.progress-bar::after { content: ''; position: absolute; right: -6px; top: 50%; transform: translateY(-50%); width: 12px; height: 12px; background: var(--accent); border-radius: 50%; display: none; }
 .progress-container:hover .progress-bar::after { display: block; }
 
 .player-right { width: 30%; min-width: 180px; display: flex; align-items: center; justify-content: flex-end; gap: 12px; }
