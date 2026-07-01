@@ -1,0 +1,17 @@
+{
+  "name": "Shadow Music V2",
+  "short_name": "Shadow",
+  "description": "Your music. Your vibe.",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#7B2FBE",
+  "icons": [
+    {
+      "src": "./icon.png",
+      "type": "image/png",
+      "sizes": "192x192 512x512",
+      "purpose": "any maskable"
+    }
+  ]
+}

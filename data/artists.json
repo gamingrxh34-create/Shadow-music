@@ -1,0 +1,42 @@
+{
+  "The Neighbourhood": {
+    "bio": "The Neighbourhood (sometimes rendered as 'THE NBHD') is an American rock band formed in Newbury Park, California, in 2011.",
+    "image": "https://res.cloudinary.com/dytac5x9v/image/upload/v1781435328/the_neighood_dp_od6he5.webp"
+  },
+  "TV Girl": {
+    "bio": "TV Girl is an American indie pop band from San Diego, California. Their sound has been described as 'hypnotic pop'.",
+    "image": "https://res.cloudinary.com/dytac5x9v/image/upload/v1782042887/TV_Girl_-_Who_Really_Cares_jgxmhp.png"
+  },
+  "Tanveer Evan": {
+    "bio": "Tanveer Evan is a talented artist known for his deeply emotional and resonant tracks, blending heartfelt lyrics with beautiful melodies.",
+    "image": ""
+  },
+  "Lana Del Rey": {
+    "bio": "Lana Del Rey is an American singer-songwriter known for her cinematic music style and exploration of tragic romance, glamour, and melancholia.",
+    "image": ""
+  },
+  "Childish Gambino": {
+    "bio": "Donald Glover, performing as Childish Gambino, is an American multi-hyphenate artist whose musical style spans hip hop, R&B, funk, and soul.",
+    "image": ""
+  },
+  "Kanye West": {
+    "bio": "Kanye West, officially known as Ye, is an American rapper, singer, and producer widely regarded as one of the most influential hip-hop artists of his generation.",
+    "image": ""
+  },
+  "Tyler, The Creator": {
+    "bio": "Tyler, The Creator is an American rapper, record producer, and director known for his innovative, boundary-pushing style and creative world-building.",
+    "image": ""
+  },
+  "Radiohead": {
+    "bio": "Radiohead are an English rock band formed in 1985. They are widely regarded as one of the most innovative and acclaimed rock bands of all time.",
+    "image": ""
+  },
+  "Ed Sheeran": {
+    "bio": "Ed Sheeran is an English singer-songwriter known for his acoustic-driven pop hits, memorable melodies, and deeply personal lyricism.",
+    "image": ""
+  },
+  "Eminem": {
+    "bio": "Eminem is an American rapper and record producer, widely considered one of the greatest, most technical, and most influential rappers of all time.",
+    "image": "https://res.cloudinary.com/dytac5x9v/image/upload/v1782043181/Eminem_wxv2l8.jpg"
+  }
+}
