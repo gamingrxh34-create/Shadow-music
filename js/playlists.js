@@ -38,6 +38,20 @@ export class Playlists {
       this.renderLibraryPlaylists();
     });
 
+    const pills = document.querySelectorAll('.sidebar .filter-pill');
+    if (pills.length >= 2) {
+      pills[0].addEventListener('click', () => {
+        pills.forEach(p => p.classList.remove('active'));
+        pills[0].classList.add('active');
+        this.renderSidebarPlaylists();
+      });
+      pills[1].addEventListener('click', () => {
+        pills.forEach(p => p.classList.remove('active'));
+        pills[1].classList.add('active');
+        this.renderSidebarArtists();
+      });
+    }
+
     document.getElementById('close-add-to-playlist-btn').addEventListener('click', () => {
       document.getElementById('add-to-playlist-modal').classList.remove('active');
       this.currentSongToAdd = null;
@@ -176,6 +190,48 @@ export class Playlists {
         item.classList.add('active');
         this.openPlaylistView(pl.id);
       });
+      container.appendChild(item);
+    });
+  }
+
+  async renderSidebarArtists() {
+    const container = document.getElementById('library-rich-list');
+    if (!container) return;
+    container.innerHTML = '';
+    
+    const followed = this.app.getFollowedArtists();
+    if(followed.length === 0) {
+      container.innerHTML = '<div style="padding: 16px; color: var(--text-subdued); text-align: center; font-size: 14px;">No artists followed.</div>';
+      return;
+    }
+    
+    followed.forEach(artistName => {
+      const artistInfo = this.app.artistsData[artistName] || {};
+      const artistSongs = this.app.allSongs.filter(s => s.artist === artistName);
+      const defaultImage = artistSongs.length > 0 ? artistSongs[0].coverUrl : '';
+      const imgUrl = artistInfo.image || defaultImage;
+      
+      const item = document.createElement('div');
+      item.className = 'rich-list-item';
+      
+      const coverHtml = imgUrl 
+        ? `<img src="${imgUrl}" alt="${artistName}" loading="lazy" style="border-radius: 50%; width:100%; height:100%; object-fit:cover;">`
+        : `<i class="fa-solid fa-user"></i>`;
+        
+      item.innerHTML = `
+        <div class="rich-list-img" style="border-radius: 50%; overflow: hidden; display: flex; justify-content: center; align-items: center; background: var(--bg-elevated);">${coverHtml}</div>
+        <div class="rich-list-text">
+          <span class="rich-list-title">${artistName}</span>
+          <span class="rich-list-subtitle">Artist</span>
+        </div>
+      `;
+      
+      item.addEventListener('click', () => {
+        document.querySelectorAll('.rich-list-item').forEach(el => el.classList.remove('active'));
+        item.classList.add('active');
+        this.app.openArtistView(artistName);
+      });
+      
       container.appendChild(item);
     });
   }

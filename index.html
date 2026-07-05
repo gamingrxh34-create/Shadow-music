@@ -75,9 +75,10 @@
         
         <div id="home-view" class="view active">
           <div class="view-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
-            <h2 style="margin: 0;">Good Evening</h2>
+            <h2 id="home-greeting" style="margin: 0;">Good Evening</h2>
             <button id="mobile-info-btn" class="icon-btn mobile-only" style="display: none; font-size: 24px; color: var(--text-base); background: none; border: none; cursor: pointer;"><i class="fa-solid fa-gear"></i></button>
           </div>
+          
           <section class="home-section">
             <div class="section-header">
               <h3>Recently Played</h3>
@@ -88,9 +89,24 @@
           <section class="home-section">
             <div class="section-header">
               <h3>Made for you</h3>
+              <span class="see-all nav-item" id="home-view-all-discover">See all</span>
             </div>
             <div class="card-grid" id="home-discover-grid"></div>
           </section>
+          <section class="home-section" id="home-artists-section">
+            <div class="section-header">
+              <h3>Top Artists</h3>
+              <span class="see-all nav-item" id="home-view-all-artists">See all</span>
+            </div>
+            <div class="card-grid" id="home-artists-grid"></div>
+          </section>
+        </div>
+
+        <div id="discover-view" class="view">
+          <div class="view-header" style="margin-bottom: 24px;">
+            <h2 style="margin: 0;">Made for you</h2>
+          </div>
+          <div class="card-grid" id="discover-all-grid"></div>
         </div>
 
         <div id="search-view" class="view">

@@ -399,6 +399,22 @@ class App {
 
     if (state.currentTrack) {
       document.body.classList.add('has-player');
+      
+      // Highlight playing track in list
+      document.querySelectorAll('.track-row').forEach(row => {
+        const numDiv = row.querySelector('.track-num');
+        if (row.dataset.songId === state.currentTrack.id) {
+          row.classList.add('is-playing');
+          if (state.isPlaying) {
+            numDiv.innerHTML = '<div class="playing-anim"><span></span><span></span><span></span></div>';
+          } else {
+            numDiv.innerHTML = '<i class="fa-solid fa-volume-high" style="color: var(--accent); font-size: 14px;"></i>';
+          }
+        } else {
+          row.classList.remove('is-playing');
+          if (row.dataset.index) numDiv.textContent = row.dataset.index;
+        }
+      });
       document.getElementById('player-title').textContent = state.currentTrack.title;
       document.getElementById('player-artist').textContent = state.currentTrack.artist;
       document.getElementById('player-cover').src = state.currentTrack.coverUrl;
@@ -511,7 +527,15 @@ class App {
   }
 
   renderHome() {
+    // Dynamic Greeting
+    const hour = new Date().getHours();
+    let greeting = 'Good Evening';
+    if (hour >= 5 && hour < 12) greeting = 'Good Morning';
+    else if (hour >= 12 && hour < 18) greeting = 'Good Afternoon';
+    document.getElementById('home-greeting').textContent = greeting;
+
     this.renderRecentHomeGrid();
+    this.renderHomeArtistsGrid();
     const discoverGrid = document.getElementById('home-discover-grid');
     discoverGrid.innerHTML = '';
     
@@ -521,18 +545,20 @@ class App {
       if (!artistMap[song.artist]) artistMap[song.artist] = { name: song.artist, songs: [] };
       artistMap[song.artist].songs.push(song);
     });
+
+    const artistList = Object.values(artistMap);
     
-    Object.values(artistMap).forEach(artist => {
+    // limit for home view
+    const homeList = artistList.slice(0, 4);
+    
+    const createDiscoverCard = (artist) => {
       const artistInfo = this.artistsData[artist.name] || {};
       const img = artistInfo.image || (artist.songs.length > 0 ? artist.songs[0].coverUrl : '');
-      
       const el = document.createElement('div');
       el.className = 'media-card';
-      
-      const imgContent = img 
+      const imgContent = img
         ? `<img src="${img}" alt="${artist.name}" style="border-radius: 50%; width: 100%; height: 100%; object-fit: cover;">`
         : `<div style="border-radius: 50%; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background: var(--bg-active); font-size: 32px;"><i class="fa-solid fa-user"></i></div>`;
-
       el.innerHTML = `
         <div class="media-card-img-container" style="border-radius: 50%;">
           ${imgContent}
@@ -541,8 +567,27 @@ class App {
         <p>Artist</p>
       `;
       el.addEventListener('click', () => this.openArtistView(artist.name));
-      discoverGrid.appendChild(el);
+      return el;
+    };
+    
+    // Populate Made For You (Existing artist cards)
+    homeList.forEach(artist => {
+      discoverGrid.appendChild(createDiscoverCard(artist));
     });
+    
+    const seeAllBtn = document.getElementById('home-view-all-discover');
+    if (seeAllBtn) {
+      seeAllBtn.onclick = () => {
+        this.switchView('discover-view');
+        const allGrid = document.getElementById('discover-all-grid');
+        if (allGrid) {
+            allGrid.innerHTML = '';
+            artistList.forEach(artist => {
+                allGrid.appendChild(createDiscoverCard(artist));
+            });
+        }
+      };
+    }
   }
 
   getFollowedArtists() {
@@ -609,6 +654,57 @@ class App {
     }
   }
 
+  async renderHomeArtistsGrid() {
+    const grid = document.getElementById('home-artists-grid');
+    if (!grid) return;
+    grid.innerHTML = '';
+    
+    const followed = this.getFollowedArtists();
+    const limited = followed.slice(0, 4);
+    
+    if (limited.length === 0) {
+      grid.innerHTML = '<div style="color: var(--text-subdued); padding: 16px; grid-column: 1 / -1;">Follow some artists to see them here!</div>';
+      return;
+    }
+    
+    limited.forEach(artistName => {
+      const artistInfo = this.artistsData[artistName] || {};
+      const artistSongs = this.allSongs.filter(s => s.artist === artistName);
+      const defaultImage = artistSongs.length > 0 ? artistSongs[0].coverUrl : '';
+      const imgUrl = artistInfo.image || defaultImage;
+      
+      const card = document.createElement('div');
+      card.className = 'media-card';
+      card.innerHTML = `
+      <div class="media-card-img-container" style="border-radius: 50%; overflow: hidden;">
+        ${imgUrl ? `<img src="${imgUrl}" alt="${artistName}" loading="lazy" style="border-radius: 50%; object-fit: cover; width: 100%; height: 100%;">` : `<div class="placeholder" style="border-radius: 50%;"><i class="fa-solid fa-user"></i></div>`}
+        <button class="play-btn-overlay" style="border-radius: 50%;"><i class="fa-solid fa-play"></i></button>
+      </div>
+      <h4 style="text-align: center; margin-top: 8px;">${artistName}</h4>
+      <p style="text-align: center;">Artist</p>
+      `;
+      card.addEventListener('click', () => this.openArtistView(artistName));
+      
+      const playBtn = card.querySelector('.play-btn-overlay');
+      playBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if(artistSongs.length > 0) this.player.setQueue(artistSongs, 0);
+      });
+      
+      grid.appendChild(card);
+    });
+    
+    const viewAllBtn = document.getElementById('home-view-all-artists');
+    if (viewAllBtn) {
+      viewAllBtn.onclick = () => {
+        const libBtn = document.querySelector('.nav-item-icon[data-target="library-view"]');
+        if (libBtn) libBtn.click();
+        const artistFilterBtn = document.querySelector('.filter-btn[data-filter="artists"]');
+        if (artistFilterBtn) artistFilterBtn.click();
+      };
+    }
+  }
+
   async renderRecentHomeGrid() {
     const recentGrid = document.getElementById('home-recent-grid');
     recentGrid.innerHTML = '';
@@ -640,6 +736,8 @@ class App {
   createTrackRow(song, index, contextList, options = {}) {
     const el = document.createElement('div');
     el.className = 'track-row';
+    el.dataset.songId = song.id;
+    el.dataset.index = index + 1;
     el.innerHTML = `
       <div class="track-num">${index + 1}</div>
       <div class="track-info">
@@ -661,7 +759,7 @@ class App {
     el.addEventListener('click', (e) => {
       if (e.target.closest('.artist-link')) {
         e.stopPropagation();
-        this.renderArtistView(song.artist);
+        this.openArtistView(song.artist);
         return;
       }
       if (e.target.closest('.track-actions')) return; // Ignore clicks inside actions container
@@ -849,19 +947,6 @@ class App {
     } else {
       nextList.innerHTML = '<div style="color: var(--text-subdued); padding: 16px;">Queue is empty.</div>';
     }
-  }
-
-  renderArtistView(artistName) {
-    const artistSongs = this.allSongs.filter(s => s.artist === artistName);
-    document.getElementById('artist-view-title').textContent = artistName;
-    document.getElementById('artist-track-list').innerHTML = '';
-    
-    artistSongs.forEach((song, i) => {
-      document.getElementById('artist-track-list').appendChild(this.createTrackRow(song, i, artistSongs));
-    });
-    
-    document.getElementById('play-artist-btn').onclick = () => this.player.setQueue(artistSongs, 0);
-    this.switchView('artist-view');
   }
 }
 
