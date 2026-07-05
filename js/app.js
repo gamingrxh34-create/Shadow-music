@@ -79,9 +79,10 @@ class App {
 
   async loadData() {
     try {
+      const cacheBuster = '?t=' + new Date().getTime();
       const [resSongs, resArtists] = await Promise.all([
-        fetch('data/songs.json'),
-        fetch('data/artists.json').catch(() => null)
+        fetch('data/songs.json' + cacheBuster),
+        fetch('data/artists.json' + cacheBuster).catch(() => null)
       ]);
       this.allSongs = await resSongs.json();
       this.artistsData = resArtists && resArtists.ok ? await resArtists.json() : {};
