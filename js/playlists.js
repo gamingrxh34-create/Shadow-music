@@ -31,7 +31,14 @@ export class Playlists {
       const name = document.getElementById('new-playlist-name').value.trim();
       if (!name) return;
       const newPlaylist = { name: name, songs: [], createdAt: Date.now() };
-      await db.add('playlists', newPlaylist);
+      
+      try {
+        await db.add('playlists', newPlaylist);
+      } catch (e) {
+        console.warn("Could not save playlist.", e);
+        alert("Storage error! Could not create playlist. Are you in Private Browsing mode?");
+      }
+
       document.getElementById('playlist-modal').classList.remove('active');
       document.getElementById('new-playlist-name').value = '';
       this.renderSidebarPlaylists();

@@ -14,7 +14,11 @@ class App {
   }
 
   async init() {
-    await db.init();
+    try {
+      await db.init();
+    } catch (e) {
+      console.warn("Storage restricted: Playlists & History may not work in this session.");
+    }
     this.bindNavigation();
     this.bindPlayerControls();
     
@@ -609,7 +613,12 @@ class App {
     } else {
       followed.push(name);
     }
-    localStorage.setItem('shadow_followed_artists', JSON.stringify(followed));
+    try {
+      localStorage.setItem('shadow_followed_artists', JSON.stringify(followed));
+    } catch (e) {
+      console.warn("Could not save to localStorage. Are you in Private Browsing?", e);
+      alert("Storage error! If you are in Private/Incognito mode, your Follows cannot be saved.");
+    }
     return followed.includes(name);
   }
 
